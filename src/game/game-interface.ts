@@ -1,8 +1,7 @@
-import {GameState} from "./game-state";
-import {CanvasUtil} from "./canvas-util"
-import {MultiCanvas} from "./canvas";
+import {GameState} from './game-state';
+import {MultiCanvas} from './canvas';
 
-export class Machine{
+export class Machine {
 
   canv: MultiCanvas;
   game: GameState;
@@ -20,8 +19,8 @@ export class Machine{
 
     init: {
       enter: () => {},
-      mousemove: () => {},
-      mapclick: () => {},
+      mousemove: (ev) => {},
+      mapclick: (ev) => {},
       esc: () => {},
       leave: () => {}
     },
@@ -29,7 +28,7 @@ export class Machine{
     free: {
       enter: () => {
         this.canv.drawGrid();
-        console.log("entering free state")
+        console.log('entering free state');
       },
       mousemove: (ev) => {
         this.canv.getMousePosAndDrawCursor(ev);
@@ -51,17 +50,17 @@ export class Machine{
      */
 
     selected: {
-      enter: () => {console.log("entering selected state")},
-      mousemove: () => {console.log("selected: mouse move")},
+      enter: () => {console.log('entering selected state')},
+      mousemove: (ev) => {console.log('selected: mouse move')},
       mapclick: (ev) => {
         console.log('selected: mapclick')
         this.transition(this.states.animating)
       },
       esc: () => {
-        console.log("selected: esc");
+        console.log('selected: esc');
         this.transition(this.states.free);
        },
-      leave: () => {console.log("leaving selected state")}
+      leave: () => {console.log('leaving selected state')}
     },
 
     /**
@@ -74,11 +73,11 @@ export class Machine{
         this.animateMovement()
           .then(this.transition.bind(this, this.states.free));
       },
-      mousemove: () => {},
-      mapclick: () => {},
+      mousemove: (ev) => {},
+      mapclick: (ev) => {},
       esc: () => {},
       leave: () => {
-        console.log('animation done.')
+        console.log('animation done.');
       }
     }
 
@@ -99,9 +98,9 @@ export class Machine{
   private animateMovement() {
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log("animation done.");
+        console.log('animation done.');
         resolve();
-      }, 1000)
-    })
+      }, 1000);
+    });
   }
 }

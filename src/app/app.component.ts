@@ -26,7 +26,7 @@ export class AppComponent {
   @Output() canvasControl: EventEmitter<any> = new EventEmitter();
 
   @HostListener('document:keydown.esc')
-  onEsc(){ this.machine.state.esc(); }
-  onMouseMove(ev){ this.machine.state.mousemove(ev); }
+  onEsc() { this.machine.state.esc(); }
+  onMouseMove(ev) { this.machine.state.mousemove(ev); }
   onMapClick(ev) { this.machine.state.mapclick(ev); }
 }
