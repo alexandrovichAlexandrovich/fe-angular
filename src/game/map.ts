@@ -14,5 +14,5 @@ export class Map {
     [99,0,0,0,99]
     ];
 
-  file = '../assets/testmap.png';
+  file = 'testmap.png';
 }

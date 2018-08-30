@@ -25,9 +25,10 @@
 <!--<div width="600" height="600">-->
 
 
-<canvas #map    width="500" height="500" style='position:absolute; z-index:1'></canvas>
-<canvas #indic  width="500" height="500" style='position:absolute; z-index:2'></canvas>
-<canvas #cursor width="500" height="500" style='position:absolute; z-index:3'></canvas>
+<canvas #map    width="{{width}}" height="{{height}}" style='position:absolute; z-index:1'></canvas>
+<img [src]="'../assets/'+this.canv.map.file" width="{{width}}" height="{{height}}"  style='position:absolute; z-index:1'/>
+<canvas #indic  width="{{width}}" height="{{height}}" style='position:absolute; z-index:2'></canvas>
+<canvas #cursor width="{{width}}" height="{{height}}" style='position:absolute; z-index:3'></canvas>
 
 <div    #units  style="width:0px; height:0px" *ngIf="game">
   <div *ngFor="let unit of game.state.player.units.names">
@@ -42,7 +43,7 @@
   </div>
 </div>
 
-<canvas #mouse  width="500" height="500" style='position:absolute; z-index:5'
+<canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:5'
         (mousemove)="onMouseMove($event)"
         (mousedown)="onMapClick($event)">
 </canvas>

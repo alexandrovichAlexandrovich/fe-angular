@@ -69,10 +69,10 @@ export class Machine {
         console.log('selected: mapclick');
         if (this.canv.canMove(this.selected, this.canv.getMousePos(ev))){
           console.log('can move there');
+          this.transition(this.states.animating);
         } else {
           console.log('can\'t move there');
         }
-        this.transition(this.states.animating);
       },
       esc: () => {
         console.log('selected: esc');

@@ -3,7 +3,7 @@ import { Map } from './map'
 export class MultiCanvas {
 
   side = 50;
-  h = 500;
+  h = 250;
   w = 500;
 
   mouse: HTMLCanvasElement;
@@ -19,6 +19,7 @@ export class MultiCanvas {
     this.indicators = indicators;
     this.background = background;
   }
+
 
 
   getMousePosAndDrawCursor(ev: MouseEvent) {
@@ -42,7 +43,7 @@ export class MultiCanvas {
   drawGrid() {
     const ctx = this.background.getContext('2d');
     for(let i = 0; i < 10; i++) {
-      for(let j = 0; j < 10; j++) {
+      for(let j = 0; j < 5; j++) {
         ctx.fillStyle = (i + j) % 2 === 0 ? '#ffffff' : '#aaaaaa'
         ctx.fillRect(i * 50, j * 50, 50, 50);
       }
@@ -65,7 +66,7 @@ export class MultiCanvas {
     if (x < 0 || x >= this.map.width || y < 0 || y >= this.map.height){ return; }
     mov -= this.map.penalty[x][y];
     if ( mov < 0 ) return;
-    this.color(x,y,'rgba(100,100,255,0.5)');
+    this.color(x,y,'rgba(0,0,255,.5');
     this.dfsMovement(mov-1, x-1, y);
     this.dfsMovement(mov-1, x+1, y);
     this.dfsMovement(mov-1, x, y-1);

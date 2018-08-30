@@ -19,6 +19,9 @@ export class AppComponent {
   game: GameState;
   good = false;
 
+  height = 250;
+  width = 500;
+
   ngAfterContentInit(): void{
     this.canv = new MultiCanvas(this.mouse.nativeElement,
                                 this.cursor.nativeElement,
