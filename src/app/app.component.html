@@ -23,14 +23,29 @@
 <!--<button (click)="minusOne()">minus one</button>-->
 
 <!--<div width="600" height="600">-->
-  <canvas #map    width="500" height="500" style='position:absolute; z-index:1'></canvas>
-  <canvas #indic  width="500" height="500" style='position:absolute; z-index:2'></canvas>
-  <canvas #cursor width="500" height="500" style='position:absolute; z-index:3'></canvas>
-  <div    #units  style="width:0px; height:0px; z-index:4"></div>
-  <canvas #mouse  width="500" height="500" style='position:absolute; z-index:5'
-          (mousemove)="onMouseMove($event)"
-          (mousedown)="onMapClick($event)">
-  </canvas>
+
+
+<canvas #map    width="500" height="500" style='position:absolute; z-index:1'></canvas>
+<canvas #indic  width="500" height="500" style='position:absolute; z-index:2'></canvas>
+<canvas #cursor width="500" height="500" style='position:absolute; z-index:3'></canvas>
+
+<div    #units  style="width:0px; height:0px" *ngIf="game">
+  <div *ngFor="let unit of game.state.player.units.names">
+    <img [src]="'../assets/'+game.state.player.units[unit].class+'.gif'"
+         [style.width]="'50px'"
+         [style.height]="'50px'"
+         [style.z-index]="4"
+         [style.position]="'absolute'"
+         [style.top]="(game.state.player.units[unit].position.y * 50 + 8)+'px'"
+         [style.left]="(game.state.player.units[unit].position.x * 50 + 8)+'px'"
+         />
+  </div>
+</div>
+
+<canvas #mouse  width="500" height="500" style='position:absolute; z-index:5'
+        (mousemove)="onMouseMove($event)"
+        (mousedown)="onMapClick($event)">
+</canvas>
 
 
 <!--<p>not working?</p>-->

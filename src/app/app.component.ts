@@ -13,17 +13,24 @@ export class AppComponent {
   @ViewChild('cursor') cursor: ElementRef;
   @ViewChild('indic') indicators: ElementRef;
   @ViewChild('map') background: ElementRef;
+  @Output() canvasControl: EventEmitter<any> = new EventEmitter();
   canv: MultiCanvas;
   machine: Machine;
   game: GameState;
+  good = false;
 
-  ngAfterViewInit(): void{
-    this.canv = new MultiCanvas(this.mouse.nativeElement, this.cursor.nativeElement, this.indicators.nativeElement, this.background.nativeElement);
+  ngAfterContentInit(): void{
+    this.canv = new MultiCanvas(this.mouse.nativeElement,
+                                this.cursor.nativeElement,
+                                this.indicators.nativeElement,
+                                this.background.nativeElement);
     this.game = new GameState();
+    console.log(this.game.state);
     this.machine = new Machine(this.canv, this.game);
+    this.good=true;
   }
 
-  @Output() canvasControl: EventEmitter<any> = new EventEmitter();
+
 
   @HostListener('document:keydown.esc')
   onEsc() { this.machine.state.esc(); }

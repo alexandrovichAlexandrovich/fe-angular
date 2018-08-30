@@ -1,0 +1,10 @@
+{
+  "team": "http://localhost:3000/api/teams?GameId=123-789-1&PlayerId=123"
+
+  "all-games": "/games/all",
+  "single-game": "/games",
+
+  "all-teams": "/teams/all",
+  "single-team": "/teams",
+  "move-player": "/teams/move"
+}

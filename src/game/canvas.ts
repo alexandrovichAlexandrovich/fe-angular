@@ -1,4 +1,4 @@
-
+import { Map } from './map'
 
 export class MultiCanvas {
 
@@ -10,6 +10,8 @@ export class MultiCanvas {
   cursor: HTMLCanvasElement;
   indicators: HTMLCanvasElement;
   background: HTMLCanvasElement;
+
+  map: Map = new Map();
 
   constructor(mouse: any, cursor: any, indicators: any, background: any) {
     this.mouse = mouse;
@@ -45,5 +47,53 @@ export class MultiCanvas {
         ctx.fillRect(i * 50, j * 50, 50, 50);
       }
     }
+  }
+
+  eraseIndicators() {
+    const ctx = this.indicators.getContext('2d');
+    ctx.clearRect(0,0,500,500);
+  }
+
+  drawMovementRange(u: any) {
+    console.log('unit clicked in map');
+    console.log(u);
+    console.log(JSON.parse(JSON.stringify(this.map.penalty)));
+    this.dfsMovement(u.mvt, u.position.x, u.position.y);
+  }
+
+  private dfsMovement(mov, x, y){
+    if (x < 0 || x >= this.map.width || y < 0 || y >= this.map.height){ return; }
+    mov -= this.map.penalty[x][y];
+    if ( mov < 0 ) return;
+    this.color(x,y,'rgba(100,100,255,0.5)');
+    this.dfsMovement(mov-1, x-1, y);
+    this.dfsMovement(mov-1, x+1, y);
+    this.dfsMovement(mov-1, x, y-1);
+    this.dfsMovement(mov-1, x, y+1);
+  }
+
+  private color(x, y, color) {
+    const ctx = this.indicators.getContext('2d');
+    ctx.clearRect(x * this.side, y * this.side, this.side, this.side);
+    ctx.fillStyle = color;
+    ctx.fillRect(x * this.side, y * this.side, this.side, this.side);
+  }
+
+  canMove(u, target){
+    return this.dfs(u.mvt, u.position.x, u.position.y, target);
+  }
+
+  private dfs(mov, x,y, target): boolean {
+    // console.log('dfs to '+x+', '+y+' with remaining movement '+mov);
+    if (x < 0 || x >= this.map.width || y < 0 || y >= this.map.height){ return false; }
+    mov -= this.map.penalty[x][y];
+    if ( mov < 0 ) return false;
+    if (target.x === x && target.y === y) return true;
+    this.color(x,y,'rgba(100,100,255,0.5)');
+    if (this.dfs(mov-1, x-1, y, target)) return true;
+    if (this.dfs(mov-1, x+1, y, target)) return true;
+    if (this.dfs(mov-1, x, y-1, target)) return true;
+    if (this.dfs(mov-1, x, y+1, target)) return true;
+    return false;
   }
 }
