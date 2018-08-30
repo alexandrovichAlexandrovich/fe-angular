@@ -107,27 +107,7 @@ export class MultiCanvas {
   drawPath(unit, end) {
     const path = this.computePathBFS(unit.position, end, unit.mvt);
     if (!path) return;
-    console.log(path);
-    let _x = unit.position.x;
-    let _y = unit.position.y;
-    for(let letter of path.path){
-      switch (letter) {
-        case 'l':
-          _x--;
-          break;
-        case 'r':
-          _x++;
-          break;
-        case 'u':
-          _y--;
-          break;
-        case 'd':
-          _y++;
-          break;
-      }
-      // console.log(_x,_y)
-      this.color(_x,_y,'rgba(0,255,0,.5)')
-    }
+    return path.path;
   }
 
   private computePathBFS(pos, end, mvt: number) {

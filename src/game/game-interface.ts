@@ -1,6 +1,7 @@
 import {GameState} from './game-state';
 import {MultiCanvas} from './canvas';
 import * as assert from "assert";
+// import * as assert from "assert";
 
 export class Machine {
 
@@ -18,6 +19,7 @@ export class Machine {
     this.game = game;
     for(let name of this.game.state.player.units.names) {
       this.updateRealizedPosition(name);
+      this.game.state.player.units[name].status = 'sleep';
     }
     this.transition(this.states.free);
   }
@@ -44,7 +46,9 @@ export class Machine {
     free: {
       enter: (ev?) => {
         this.canv.drawGrid();
+        this.canv.eraseIndicators();
         console.log('entering free state');
+        console.log(this.game.state.player.units);
       },
       mousemove: (ev?) => {
         this.canv.getMousePosAndDrawCursor(ev);
@@ -103,7 +107,6 @@ export class Machine {
       leave: (ev?) => {
         console.log('leaving selected state');
         this.selected = null;
-        this.canv.eraseIndicators();
       }
     },
 
@@ -158,13 +161,67 @@ export class Machine {
       //   console.log('animation done.');
       //   resolve();
       // }, 250);
-      this.canv.drawPath(ev.unit, ev.end);
+      const path = this.canv.drawPath(ev.unit, ev.end);
       console.log('drew');
-      setTimeout(() => {
-        this.canv.drawMovementRange(ev.unit);
-        console.log('undrew');
-        resolve();
-      }, 1000);
+      this.movePath(ev.unit, path)
+        .then(() => {
+          ev.unit.position=ev.end;
+          resolve();
+        });
+      // setTimeout(() => {
+      //   this.canv.drawMovementRange(ev.unit);
+      //   console.log('undrew');
+      //   resolve();
+      // }, 1000);
     });
+  }
+
+  private movePath(unit, path){
+    console.log(path);
+    return new Promise((resolve) => {
+      if (path === ''){
+        resolve();
+      } else {
+        this.moveTile(unit, path[0], this.tileSize)
+          .then(() => {
+            this.movePath(unit, path.slice(1))
+              .then(resolve);
+            }
+            );
+      }
+    });
+  }
+
+  private moveTile(unit, direction, pixelsLeft){
+    return new Promise((resolve) => {
+      if (pixelsLeft <= 0) {
+        this.shiftRealPos(unit, direction, pixelsLeft);
+        resolve();
+      } else {
+        this.shiftRealPos(unit, direction, 2);
+        setTimeout(() => {
+          console.log(direction);
+          this.moveTile(unit, direction, pixelsLeft-2)
+            .then(resolve);
+        }, 5);
+      }
+    })
+  }
+
+  private shiftRealPos(unit, direction, p) {
+    switch(direction) {
+      case 'l':
+        unit.realPos.x -= p;
+        break;
+      case 'r':
+        unit.realPos.x += p;
+        break;
+      case 'u':
+        unit.realPos.y -= p;
+        break;
+      case 'd':
+        unit.realPos.y += p;
+        break;
+    }
   }
 }

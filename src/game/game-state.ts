@@ -29,8 +29,4 @@ export class GameState {
       }
     }
   };
-
-  moveAlice(newPos: {x: number, y: number}){
-    this.state.player.units['Alice'].position = newPos;
-  }
 }

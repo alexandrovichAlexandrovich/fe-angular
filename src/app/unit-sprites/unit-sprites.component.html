@@ -1,7 +1,7 @@
 <div    #un  style="width:0px; height:0px">
   <div *ngFor="let name of units.names">
 
-    <img [src]="'../assets/'+units[name].class+'.gif'"
+    <img [src]="dex[units[name].class][units[name].status]"
          [style.width]="'50px'"
          [style.height]="'50px'"
          [style.z-index]="4"
