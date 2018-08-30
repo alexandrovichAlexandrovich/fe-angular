@@ -77,7 +77,12 @@ export class MultiCanvas {
     const ctx = this.indicators.getContext('2d');
     ctx.clearRect(x * this.side, y * this.side, this.side, this.side);
     ctx.fillStyle = color;
+    let grd = ctx.createRadialGradient(x*50 + 25, y*50+25, 18, x*50 + 26, y*50+26, 50);
+    grd.addColorStop(0,'rgba(100,100,255,0.5)');
+    grd.addColorStop(1,'rgba(0,0,255,0.8)');
+    ctx.fillStyle = grd;
     ctx.fillRect(x * this.side, y * this.side, this.side, this.side);
+
   }
 
   canMove(u, target){
