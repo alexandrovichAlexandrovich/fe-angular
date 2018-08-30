@@ -1,0 +1,17 @@
+<div    #un  style="width:0px; height:0px">
+  <div *ngFor="let name of units.names">
+
+    <img [src]="'../assets/'+units[name].class+'.gif'"
+         [style.width]="'50px'"
+         [style.height]="'50px'"
+         [style.z-index]="4"
+         [style.position]="'absolute'"
+         [style.top]="(units[name].realPos.y)+'px'"
+         [style.left]="(units[name].realPos.x)+'px'"
+    />
+  </div>
+</div>
+
+<div    #enemies  style="width:0px; height:0px">
+
+</div>

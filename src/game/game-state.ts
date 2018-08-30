@@ -4,6 +4,7 @@ export class GameState {
       units: {
         names: ['Alice'],
         Alice: {
+          name: 'Alice',
           class: 'lordf',
           mvt: 5,
           position: {
@@ -16,7 +17,8 @@ export class GameState {
     enemy: {
       units: {
         names: ['Bob'],
-        Alice: {
+        Bob: {
+          name: 'Bob',
           class: 'brigandm',
           mvt: 5,
           position:{

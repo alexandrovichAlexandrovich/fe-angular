@@ -30,22 +30,17 @@
 <canvas #indic  width="{{width}}" height="{{height}}" style='position:absolute; z-index:2'></canvas>
 <canvas #cursor width="{{width}}" height="{{height}}" style='position:absolute; z-index:3'></canvas>
 
-<div    #units  style="width:0px; height:0px" *ngIf="game">
-  <div *ngFor="let unit of game.state.player.units.names">
-    <img [src]="'../assets/'+game.state.player.units[unit].class+'.gif'"
-         [style.width]="'50px'"
-         [style.height]="'50px'"
-         [style.z-index]="4"
-         [style.position]="'absolute'"
-         [style.top]="(game.state.player.units[unit].position.y * 50 + 8)+'px'"
-         [style.left]="(game.state.player.units[unit].position.x * 50 + 8)+'px'"
-         />
-  </div>
-</div>
+<app-unit-sprites [units]="this.game.state.player.units"
+                  [enemies]="this.game.state.enemy.units"
+                  style="position: absolute; z-index: 4">
+
+</app-unit-sprites>
+
 
 <canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:5'
         (mousemove)="onMouseMove($event)"
-        (mousedown)="onMapClick($event)">
+        (mousedown)="onMapClick($event)"
+        [style.cursor]="'none'">
 </canvas>
 
 

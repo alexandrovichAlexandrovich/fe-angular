@@ -1,4 +1,5 @@
 import { Map } from './map'
+import {visit} from "../../node_modules/@angular/compiler-cli/src/ngtsc/util/src/visitor";
 
 export class MultiCanvas {
 
@@ -56,9 +57,9 @@ export class MultiCanvas {
   }
 
   drawMovementRange(u: any) {
-    console.log('unit clicked in map');
-    console.log(u);
-    console.log(JSON.parse(JSON.stringify(this.map.penalty)));
+    // console.log('unit clicked in map');
+    // console.log(u);
+    // console.log(JSON.parse(JSON.stringify(this.map.penalty)));
     this.dfsMovement(u.mvt, u.position.x, u.position.y);
   }
 
@@ -101,5 +102,76 @@ export class MultiCanvas {
     if (this.dfs(mov-1, x, y-1, target)) return true;
     if (this.dfs(mov-1, x, y+1, target)) return true;
     return false;
+  }
+
+  drawPath(unit, end) {
+    const path = this.computePathBFS(unit.position, end, unit.mvt);
+    if (!path) return;
+    console.log(path);
+    let _x = unit.position.x;
+    let _y = unit.position.y;
+    for(let letter of path.path){
+      switch (letter) {
+        case 'l':
+          _x--;
+          break;
+        case 'r':
+          _x++;
+          break;
+        case 'u':
+          _y--;
+          break;
+        case 'd':
+          _y++;
+          break;
+      }
+      // console.log(_x,_y)
+      this.color(_x,_y,'rgba(0,255,0,.5)')
+    }
+  }
+
+  private computePathBFS(pos, end, mvt: number) {
+    let visited = [];
+    for(var _x = 0; _x < this.map.width; _x++){
+      visited.push([]);
+      for(var _y = 0; _y < this.map.height; _y++){
+        visited[_x].push(false);
+      }
+    }
+    visited[pos.x][pos.y] = {path: '', mvt: mvt};
+    let q = [{x: pos.x, y: pos.y}];
+    while (q.length > 0) {
+      let curr = q.shift();
+      let x = curr.x;
+      let y = curr.y;
+      // console.log('curr: '+curr.x+','+curr.y);
+      let penalty; let p; let m;
+      let neighbors = [
+        {x: x-1, y: y, code: 'l'},
+        {x: x+1, y: y, code: 'r'},
+        {x: x, y: y+1, code: 'd'},
+        {x: x, y: y-1, code: 'u'},
+      ];
+      for (let n of neighbors) {
+        if(this.validCoords(n.x, n.y)) {
+          // console.log(this.map.penalty[n.x][n.y]);
+          penalty = this.map.penalty[n.x][n.y] + 1;
+          m = visited[x][y].mvt - penalty;
+          if(!visited[n.x][n.y] || visited[n.x][y].mvt < m){
+            if (m >= 0) {
+              p = visited[x][y].path;
+              visited[n.x][n.y] = {path: p + n.code, mvt: m};
+              q.push({x:n.x, y:n.y});
+            }
+          }
+        }
+      }
+    }
+    return visited[end.x][end.y];
+  }
+
+  private validCoords(x, y) {
+    if(x < 0 || x >= this.map.width || y < 0 || y >= this.map.height){ return false; }
+    return true;
   }
 }

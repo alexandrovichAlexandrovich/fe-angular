@@ -14,6 +14,8 @@ export class AppComponent {
   @ViewChild('indic') indicators: ElementRef;
   @ViewChild('map') background: ElementRef;
   @Output() canvasControl: EventEmitter<any> = new EventEmitter();
+  @Output() onAnimateSprite: EventEmitter<any> = new EventEmitter<any>();
+
   canv: MultiCanvas;
   machine: Machine;
   game: GameState;
@@ -29,14 +31,15 @@ export class AppComponent {
                                 this.background.nativeElement);
     this.game = new GameState();
     console.log(this.game.state);
+    console.log(this.game.state);
     this.machine = new Machine(this.canv, this.game);
     this.good=true;
   }
-
-
 
   @HostListener('document:keydown.esc')
   onEsc() { this.machine.state.esc(); }
   onMouseMove(ev) { this.machine.state.mousemove(ev); }
   onMapClick(ev) { this.machine.state.mapclick(ev); }
+
+
 }
