@@ -14,6 +14,9 @@ export class Machine {
   map = new Map();
   tileSize = 50;
 
+  mouse = {x: 0, y: 0};
+  showcursor = false;
+
   constructor(canv, game){
     this.canv = canv;
     this.game = game;
@@ -51,7 +54,10 @@ export class Machine {
         console.log(this.game.state.player.units);
       },
       mousemove: (ev?) => {
-        this.canv.getMousePosAndDrawCursor(ev);
+        this.showcursor = true;
+        this.mouse = this.canv.getMousePos(ev);
+        // console.log(this.mouse);
+        // this.canv.getMousePosAndDrawCursor(ev);
         let unit = this.clickedOnUnit(ev);
         if (unit !== null) {
           this.canv.drawMovementRange(unit);
@@ -87,7 +93,10 @@ export class Machine {
         this.canv.drawMovementRange(this.selected);
         assert(this.selected !== null);
         },
-      mousemove: (ev?) => {this.canv.getMousePosAndDrawCursor(ev);},
+      mousemove: (ev?) => {
+        this.mouse = this.canv.getMousePos(ev);
+        // this.canv.getMousePosAndDrawCursor(ev);
+        },
       mapclick: (ev?) => {
         console.log('selected: mapclick');
         if (this.canv.canMove(this.selected, this.canv.getMousePos(ev))){
@@ -116,6 +125,7 @@ export class Machine {
 
     animating: {
       enter: (ev) => {
+        this.showcursor = false;
         console.log('animating...');
         this.animateMovement(ev)
           .then(this.transition.bind(this, this.states.free));
@@ -124,6 +134,7 @@ export class Machine {
       mapclick: (ev?) => {},
       esc: (ev?) => {},
       leave: (ev?) => {
+        this.showcursor = true;
         console.log('animation done.');
       }
     }
@@ -157,31 +168,24 @@ export class Machine {
 
   private animateMovement(ev) {
     return new Promise((resolve) => {
-      // setTimeout(() => {
-      //   console.log('animation done.');
-      //   resolve();
-      // }, 250);
       const path = this.canv.drawPath(ev.unit, ev.end);
       console.log('drew');
       this.movePath(ev.unit, path)
         .then(() => {
           ev.unit.position=ev.end;
+          ev.unit.status='sleep';
           resolve();
         });
-      // setTimeout(() => {
-      //   this.canv.drawMovementRange(ev.unit);
-      //   console.log('undrew');
-      //   resolve();
-      // }, 1000);
     });
   }
 
   private movePath(unit, path){
-    console.log(path);
+    // console.log(path);
     return new Promise((resolve) => {
       if (path === ''){
         resolve();
       } else {
+        unit.status = path[0];
         this.moveTile(unit, path[0], this.tileSize)
           .then(() => {
             this.movePath(unit, path.slice(1))
@@ -200,27 +204,27 @@ export class Machine {
       } else {
         this.shiftRealPos(unit, direction, 2);
         setTimeout(() => {
-          console.log(direction);
+          // console.log(direction);
           this.moveTile(unit, direction, pixelsLeft-2)
             .then(resolve);
         }, 5);
       }
-    })
+    });
   }
 
-  private shiftRealPos(unit, direction, p) {
+  private shiftRealPos(unit, direction, amount) {
     switch(direction) {
       case 'l':
-        unit.realPos.x -= p;
+        unit.realPos.x -= amount;
         break;
       case 'r':
-        unit.realPos.x += p;
+        unit.realPos.x += amount;
         break;
       case 'u':
-        unit.realPos.y -= p;
+        unit.realPos.y -= amount;
         break;
       case 'd':
-        unit.realPos.y += p;
+        unit.realPos.y += amount;
         break;
     }
   }

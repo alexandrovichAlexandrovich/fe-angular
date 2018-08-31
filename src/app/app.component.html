@@ -36,11 +36,14 @@
 
 </app-unit-sprites>
 
+<img src="../assets/cursor.gif" style="position: absolute; z-index:5" width="63" height="63"
+        [style.top]="this.machine.mouse.y * 50+'px'"
+        [style.left]="this.machine.mouse.x * 50+'px'"
+        *ngIf="this.machine.showcursor">
 
-<canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:5'
+<canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:6; cursor: url("../assets/mousedot.png"), auto'
         (mousemove)="onMouseMove($event)"
-        (mousedown)="onMapClick($event)"
-        [style.cursor]="'none'">
+        (mousedown)="onMapClick($event)">
 </canvas>
 
 
