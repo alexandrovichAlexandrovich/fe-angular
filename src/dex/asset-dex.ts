@@ -6,5 +6,13 @@ export const AssetDex = {
     l: '../assets/lordf/lordf_l.gif',
     r: '../assets/lordf/lordf_r.gif',
     selected: '../assets/lordf/lordf.gif'
+  },
+  brigandm: {
+    sleep: '../assets/brigandm/brigandm.gif',
+    u: '../assets/brigandm/brigandm.gif',
+    d: '../assets/brigandm/brigandm.gif',
+    l: '../assets/brigandm/brigandm.gif',
+    r: '../assets/brigandm/brigandm.gif',
+    selected: '../assets/brigandm/brigandm.gif',
   }
 }

@@ -22,7 +22,7 @@ export class Machine {
     this.game = game;
     for(let name of this.game.state.player.units.names) {
       this.updateRealizedPosition(name);
-      this.game.state.player.units[name].status = 'sleep';
+      // this.game.state.player.units[name].status = 'sleep';
     }
     this.transition(this.states.free);
   }
@@ -46,12 +46,33 @@ export class Machine {
       leave: (ev?) => {}
     },
 
+    blocked: {
+      enter: (ev?) => {
+        console.log("Entering blocked state");
+        this.canv.eraseIndicators();
+        this.showcursor = false;
+        this.checkForPlayerTurn()
+          .then(() => {
+            this.freeAllUnits();
+            this.transition(this.states.free);
+          });
+      },
+      mousemove: (ev?) => {},
+      mapclick: (ev?) => {},
+      esc: (ev?) => {},
+      leave: (ev?) => {}
+    },
+
     free: {
       enter: (ev?) => {
+        this.showcursor = true;
         this.canv.drawGrid();
         this.canv.eraseIndicators();
         console.log('entering free state');
         console.log(this.game.state.player.units);
+        if(this.allUnitsAsleep()){
+          this.transition(this.states.blocked);
+        }
       },
       mousemove: (ev?) => {
         this.showcursor = true;
@@ -59,7 +80,8 @@ export class Machine {
         // console.log(this.mouse);
         // this.canv.getMousePosAndDrawCursor(ev);
         let unit = this.clickedOnUnit(ev);
-        if (unit !== null) {
+        if (unit !== null && !unit.sleep) {
+          this.canv.eraseIndicators();
           this.canv.drawMovementRange(unit);
         } else {
           this.canv.eraseIndicators();
@@ -68,7 +90,7 @@ export class Machine {
       mapclick: (ev?) => {
         let unit = this.clickedOnUnit(ev);
         console.log(unit);
-        if(unit !==  null){
+        if(unit !==  null && !unit.sleep){
           console.log('free: map clicked on unit');
           this.selected = unit;
           this.transition(this.states.selected);
@@ -91,7 +113,9 @@ export class Machine {
       enter: (ev?) => {
         console.log('entering selected state');
         this.canv.drawMovementRange(this.selected);
-        assert(this.selected !== null);
+        if(this.selected === null){
+          throw new Error("SELECTED IS NULL (game-interface:117)");
+        };
         },
       mousemove: (ev?) => {
         this.mouse = this.canv.getMousePos(ev);
@@ -99,7 +123,8 @@ export class Machine {
         },
       mapclick: (ev?) => {
         console.log('selected: mapclick');
-        if (this.canv.canMove(this.selected, this.canv.getMousePos(ev))){
+        if (!this.isOccupied(this.canv.getMousePos(ev)) &&
+          this.canv.canMove(this.selected, this.canv.getMousePos(ev))){
           console.log('can move there');
           this.transition(this.states.animating,
             {unit: this.selected,
@@ -129,6 +154,7 @@ export class Machine {
         console.log('animating...');
         this.animateMovement(ev)
           .then(this.transition.bind(this, this.states.free));
+        ev.unit.sleep = true;
       },
       mousemove: (ev?) => {},
       mapclick: (ev?) => {},
@@ -140,6 +166,13 @@ export class Machine {
     }
 
   };
+
+  private allUnitsAsleep() {
+    for(let name of this.game.state.player.units.names) {
+      if(!this.game.state.player.units[name].sleep) return false;
+    }
+    return true;
+  }
 
   state = this.states.init;
 
@@ -212,6 +245,14 @@ export class Machine {
     });
   }
 
+  private checkForPlayerTurn(){
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000)
+    })
+  }
+
   private shiftRealPos(unit, direction, amount) {
     switch(direction) {
       case 'l':
@@ -227,5 +268,22 @@ export class Machine {
         unit.realPos.y += amount;
         break;
     }
+  }
+
+  private freeAllUnits() {
+    for (let name of this.game.state.player.units.names) {
+      this.game.state.player.units[name].sleep = false;
+    }
+  }
+
+  private isOccupied(pos) {
+    for (let name of this.game.state.player.units.names) {
+      const unitPos = this.game.state.player.units[name].position;
+      if(unitPos.x === pos.x && unitPos.y === pos.y){
+        console.log('Occupied by '+name);
+        return true;
+      }
+    }
+    return false;
   }
 }

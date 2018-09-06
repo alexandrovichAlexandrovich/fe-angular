@@ -60,7 +60,16 @@ export class MultiCanvas {
     // console.log('unit clicked in map');
     // console.log(u);
     // console.log(JSON.parse(JSON.stringify(this.map.penalty)));
-    this.dfsMovement(u.mvt, u.position.x, u.position.y);
+    // this.dfsMovement(u.mvt, u.position.x, u.position.y);
+    const map = this.computePathBFS(u.position, u.mvt);
+    // console.log(map);
+    for (let x = 0; x < map.length; x++) {
+      for (let y = 0; y < map[0].length; y++) {
+        if (map[x][y]) {
+          this.color(x,y,'blue');
+        }
+      }
+    }
   }
 
   private dfsMovement(mov, x, y){
@@ -105,12 +114,12 @@ export class MultiCanvas {
   }
 
   drawPath(unit, end) {
-    const path = this.computePathBFS(unit.position, end, unit.mvt);
-    if (!path) return;
-    return path.path;
+    const path = this.computePathBFS(unit.position, unit.mvt);
+    if (!path[end.x][end.y]) return;
+    return path[end.x][end.y].path;
   }
 
-  private computePathBFS(pos, end, mvt: number) {
+  private computePathBFS(pos, mvt: number) {
     let visited = [];
     for(var _x = 0; _x < this.map.width; _x++){
       visited.push([]);
@@ -147,7 +156,7 @@ export class MultiCanvas {
         }
       }
     }
-    return visited[end.x][end.y];
+    return visited;
   }
 
   private validCoords(x, y) {

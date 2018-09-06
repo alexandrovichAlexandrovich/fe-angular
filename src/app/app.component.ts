@@ -31,7 +31,7 @@ export class AppComponent {
                                 this.background.nativeElement);
     this.game = new GameState();
     console.log(this.game.state);
-    console.log(this.game.state);
+    // console.log(this.game.state);
     this.machine = new Machine(this.canv, this.game);
     this.good=true;
   }
