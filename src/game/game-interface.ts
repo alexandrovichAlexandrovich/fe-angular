@@ -157,7 +157,7 @@ export class Machine {
        },
       leave: (ev?) => {
         console.log('leaving selected state');
-        this.selected = null;
+        this.selected = {};
       }
     },
 
