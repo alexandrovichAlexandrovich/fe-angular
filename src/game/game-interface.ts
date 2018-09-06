@@ -1,6 +1,6 @@
 import {GameState} from './game-state';
 import {MultiCanvas} from './canvas';
-import * as assert from "assert";
+import * as assert from 'assert';
 // import * as assert from "assert";
 
 export class Machine {

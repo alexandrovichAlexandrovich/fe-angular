@@ -25,26 +25,32 @@
 <!--<div width="600" height="600">-->
 
 
-<canvas #map    width="{{width}}" height="{{height}}" style='position:absolute; z-index:1'></canvas>
-<img [src]="'../assets/'+this.canv.map.file" width="{{width}}" height="{{height}}"  style='position:absolute; z-index:1'/>
-<canvas #indic  width="{{width}}" height="{{height}}" style='position:absolute; z-index:2'></canvas>
-<canvas #cursor width="{{width}}" height="{{height}}" style='position:absolute; z-index:3'></canvas>
+<div [style.width]=width [style.height]=height style="position: relative;">
+  <canvas #map    width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:1'></canvas>
+  <img [src]="'../assets/'+this.canv.map.file" width="{{width}}" height="{{height}}"  style='position:absolute; z-index:1'/>
+  <canvas #indic  width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:2'></canvas>
+  <canvas #cursor width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:3'></canvas>
 
-<app-unit-sprites [units]="this.game.state.player.units"
-                  [enemies]="this.game.state.enemy.units"
-                  style="position: absolute; z-index: 4">
+  <app-unit-sprites [units]="this.game.state.player.units"
+                    style="position: absolute; z-index: 4">
+  </app-unit-sprites>
 
-</app-unit-sprites>
+  <img src="../assets/cursor.gif" style="position: absolute; z-index:5" width="63" height="63"
+       [style.top]="this.machine.mouse.y * 50 - 6 +'px'"
+       [style.left]="this.machine.mouse.x * 50 - 6 +'px'"
+       *ngIf="this.machine.showcursor">
 
-<img src="../assets/cursor.gif" style="position: absolute; z-index:5" width="63" height="63"
-        [style.top]="this.machine.mouse.y * 50+'px'"
-        [style.left]="this.machine.mouse.x * 50+'px'"
-        *ngIf="this.machine.showcursor">
-
-<canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:6; cursor: url("../assets/mousedot.png"), auto'
-        (mousemove)="onMouseMove($event)"
-        (mousedown)="onMapClick($event)">
-</canvas>
+  <canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:6; cursor: url("../assets/mousedot.png"), auto'
+          (mousemove)="onMouseMove($event)"
+          (mousedown)="onMapClick($event)">
+  </canvas>
+</div>
 
 
-<!--<p>not working?</p>-->
+<div>
+  <p>dsfsadf</p>
+  <app-info-dialog [state]="this.game.state">
+
+  </app-info-dialog>
+</div>
+
