@@ -1,12 +1,12 @@
 import {GameState} from './game-state';
 import {MultiCanvas} from './canvas';
-import * as assert from 'assert';
 // import * as assert from "assert";
 
 export class Machine {
 
   canv: MultiCanvas;
   game: GameState;
+  units : any;
   selected: any;
   name: string;
   animating: any;
@@ -20,11 +20,13 @@ export class Machine {
   constructor(canv, game){
     this.canv = canv;
     this.game = game;
-    for(let name of this.game.state.player.units.names) {
+    this.units = this.game.state.player.units;
+    this.selected = {};
+    for(let name of this.units.names) {
       this.updateRealizedPosition(name);
-      // this.game.state.player.units[name].status = 'sleep';
+      this.units[name].status = this.units[name].sleep ? 'sleep' : 'selected';
     }
-    this.transition(this.states.free);
+    this.transition(this.states.blocked);
   }
 
   updateRealizedPosition(name) {
@@ -53,7 +55,10 @@ export class Machine {
         this.showcursor = false;
         this.checkForPlayerTurn()
           .then(() => {
-            this.freeAllUnits();
+            if(this.allUnitsAsleep()) {
+              this.freeAllUnits();
+            }
+            this.show('Player phase');
             this.transition(this.states.free);
           });
       },
@@ -65,6 +70,10 @@ export class Machine {
 
     free: {
       enter: (ev?) => {
+        for(let name of this.units.names) {
+          this.updateRealizedPosition(name);
+          this.units[name].status = this.units[name].sleep ? 'sleep' : 'selected';
+        }
         this.showcursor = true;
         this.canv.drawGrid();
         this.canv.eraseIndicators();
@@ -80,11 +89,14 @@ export class Machine {
         // console.log(this.mouse);
         // this.canv.getMousePosAndDrawCursor(ev);
         let unit = this.clickedOnUnit(ev);
-        if (unit !== null && !unit.sleep) {
-          this.canv.eraseIndicators();
-          this.canv.drawMovementRange(unit);
+        this.canv.eraseIndicators();
+        if (unit !== null) {
+          this.selected = unit;
+          if (!unit.sleep) {
+            this.canv.drawMovementRange(unit);
+          }
         } else {
-          this.canv.eraseIndicators();
+          this.selected = {};
         }
       },
       mapclick: (ev?) => {
@@ -115,16 +127,21 @@ export class Machine {
         this.canv.drawMovementRange(this.selected);
         if(this.selected === null){
           throw new Error("SELECTED IS NULL (game-interface:117)");
-        };
-        },
+        } else {
+          console.log('selected unit is '+this.selected);
+        }
+      },
       mousemove: (ev?) => {
         this.mouse = this.canv.getMousePos(ev);
         // this.canv.getMousePosAndDrawCursor(ev);
         },
       mapclick: (ev?) => {
         console.log('selected: mapclick');
-        if (!this.isOccupied(this.canv.getMousePos(ev)) &&
-          this.canv.canMove(this.selected, this.canv.getMousePos(ev))){
+        const path = this.canv.drawPath(this.selected, this.canv.getMousePos(ev));
+        const tile = this.canv.getMousePos(ev);
+        const standingOnTile = this.selected.position.x === tile.x && this.selected.position.y === tile.y;
+        const validMove = path != null && (!this.isOccupied(tile) || standingOnTile);
+        if (validMove){
           console.log('can move there');
           this.transition(this.states.animating,
             {unit: this.selected,
@@ -249,7 +266,7 @@ export class Machine {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve();
-      }, 1000)
+      }, 2000)
     })
   }
 
@@ -285,5 +302,9 @@ export class Machine {
       }
     }
     return false;
+  }
+
+  private show(s) {
+    console.log(s);
   }
 }

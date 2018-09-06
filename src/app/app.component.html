@@ -25,7 +25,7 @@
 <!--<div width="600" height="600">-->
 
 
-<div [style.width]=width [style.height]=height style="position: relative;">
+<div [style.height.px]="height" [style.width.px]="width" style="position: relative; display: inline-block; vertical-align: top">
   <canvas #map    width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:1'></canvas>
   <img [src]="'../assets/'+this.canv.map.file" width="{{width}}" height="{{height}}"  style='position:absolute; z-index:1'/>
   <canvas #indic  width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:2'></canvas>
@@ -47,9 +47,8 @@
 </div>
 
 
-<div>
-  <p>dsfsadf</p>
-  <app-info-dialog [state]="this.game.state">
+<div [style.height.px]="height" [style.width.px]="width/3" style="position: relative; display: inline-block; vertical-align: top">
+  <app-info-dialog [machine]="this.machine">
 
   </app-info-dialog>
 </div>

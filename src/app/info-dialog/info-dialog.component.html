@@ -1,3 +1,16 @@
-<p>
-  {{ state }}
-</p>
+<div style="padding-left: 20px" *ngIf="stringify(machine.selected) !== '{}'">
+  <p> {{ machine.selected.name }} </p>
+  <p> {{ assets[machine.selected.class].title }} </p>
+
+  <p style="margin: 0; padding: 0">Inventory:</p>
+  <div *ngFor="let item of machine.selected.inventory" style="margin: 0; padding: 0">
+    <p style="margin: 0; padding: 0">
+      {{ item.item }} ({{ item.uses }})
+    </p>
+    <p style="margin: 0; padding: 0">
+       -  - {{items[item.id].description}}
+    </p>
+    <button *ngIf="items[item.id].equippable"></button>
+  </div>
+</div>
+

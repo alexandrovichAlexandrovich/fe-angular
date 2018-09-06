@@ -1,6 +1,7 @@
 export const AssetDex = {
   lordf: {
-    sleep: '../assets/lordf/lordf.gif',
+    title: 'Lord',
+    sleep: '../assets/lordf/lordf_sleep.gif',
     u: '../assets/lordf/lordf_u.gif',
     d: '../assets/lordf/lordf_d.gif',
     l: '../assets/lordf/lordf_l.gif',
@@ -8,7 +9,8 @@ export const AssetDex = {
     selected: '../assets/lordf/lordf.gif'
   },
   brigandm: {
-    sleep: '../assets/brigandm/brigandm.gif',
+    title: 'Brigand',
+    sleep: '../assets/brigandm/brigandm_sleep.gif',
     u: '../assets/brigandm/brigandm.gif',
     d: '../assets/brigandm/brigandm.gif',
     l: '../assets/brigandm/brigandm.gif',

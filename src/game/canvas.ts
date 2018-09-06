@@ -91,7 +91,7 @@ export class MultiCanvas {
     grd.addColorStop(0,'rgba(100,100,255,0.5)');
     grd.addColorStop(1,'rgba(0,0,255,0.8)');
     ctx.fillStyle = grd;
-    ctx.fillRect(x * this.side, y * this.side, this.side, this.side);
+    ctx.fillRect(x * this.side + 1, y * this.side + 1, this.side - 1, this.side - 1);
 
   }
 
@@ -115,7 +115,7 @@ export class MultiCanvas {
 
   drawPath(unit, end) {
     const path = this.computePathBFS(unit.position, unit.mvt);
-    if (!path[end.x][end.y]) return;
+    if (!path[end.x][end.y]) return null;
     return path[end.x][end.y].path;
   }
 

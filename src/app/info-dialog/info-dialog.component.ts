@@ -1,4 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Machine} from "../../game/game-interface";
+import {AssetDex} from "../../dex/asset-dex";
+import {ItemDex} from "../../dex/item-dex";
 
 @Component({
   selector: 'app-info-dialog',
@@ -7,12 +10,18 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class InfoDialogComponent implements OnInit {
 
-  @Input() state: any;
+  @Input() machine: Machine;
 
+  assets = AssetDex;
+  items = ItemDex;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
+  }
+
+  stringify(obj) {
+    return JSON.stringify(obj);
   }
 
 }
