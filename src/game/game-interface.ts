@@ -12,27 +12,23 @@ export class Machine {
   animating: any;
 
   map = new Map();
-  tileSize = 50;
+  tileSize = 30;
 
   mouse = {x: 0, y: 0};
   showcursor = false;
+  waiting = true;
+  enemyTurn = true;
 
   constructor(canv, game){
     this.canv = canv;
     this.game = game;
     this.units = this.game.state.player.units;
     this.selected = {};
-    for(let name of this.units.names) {
+    for(const name of this.units.names) {
       this.updateRealizedPosition(name);
       this.units[name].status = this.units[name].sleep ? 'sleep' : 'selected';
     }
     this.transition(this.states.blocked);
-  }
-
-  updateRealizedPosition(name) {
-    const unit = this.game.state.player.units[name];
-    const pos = unit.position;
-    unit.realPos = {x: pos.x * this.tileSize, y: pos.y * this.tileSize};
   }
 
   states = {
@@ -62,15 +58,28 @@ export class Machine {
             this.transition(this.states.free);
           });
       },
-      mousemove: (ev?) => {},
+      mousemove: (ev?) => {
+        this.mouse = this.canv.getMousePos(ev);
+        const unit = this.clickedOnUnit(ev);
+        this.canv.eraseIndicators();
+        if (unit !== null) {
+          this.selected = unit;
+        } else {
+          this.selected = {};
+        }
+      },
       mapclick: (ev?) => {},
       esc: (ev?) => {},
-      leave: (ev?) => {}
+      leave: (ev?) => {
+        this.enemyTurn = false;
+        this.selected = {};
+      }
     },
 
     free: {
       enter: (ev?) => {
-        for(let name of this.units.names) {
+        this.waiting = false;
+        for(const name of this.units.names) {
           this.updateRealizedPosition(name);
           this.units[name].status = this.units[name].sleep ? 'sleep' : 'selected';
         }
@@ -80,15 +89,14 @@ export class Machine {
         console.log('entering free state');
         console.log(this.game.state.player.units);
         if(this.allUnitsAsleep()){
+          this.enemyTurn = true;
           this.transition(this.states.blocked);
         }
       },
       mousemove: (ev?) => {
         this.showcursor = true;
         this.mouse = this.canv.getMousePos(ev);
-        // console.log(this.mouse);
-        // this.canv.getMousePosAndDrawCursor(ev);
-        let unit = this.clickedOnUnit(ev);
+        const unit = this.clickedOnUnit(ev);
         this.canv.eraseIndicators();
         if (unit !== null) {
           this.selected = unit;
@@ -100,7 +108,7 @@ export class Machine {
         }
       },
       mapclick: (ev?) => {
-        let unit = this.clickedOnUnit(ev);
+        const unit = this.clickedOnUnit(ev);
         console.log(unit);
         if(unit !==  null && !unit.sleep){
           console.log('free: map clicked on unit');
@@ -126,15 +134,20 @@ export class Machine {
         console.log('entering selected state');
         this.canv.drawMovementRange(this.selected);
         if(this.selected === null){
-          throw new Error("SELECTED IS NULL (game-interface:117)");
+          throw new Error('SELECTED IS NULL (game-interface:117)');
         } else {
           console.log('selected unit is '+this.selected);
         }
       },
       mousemove: (ev?) => {
         this.mouse = this.canv.getMousePos(ev);
+        const path = this.canv.drawPath(this.selected, this.canv.getMousePos(ev));
+        this.canv.clearPathMarkers();
+        if (path != null) {
+          this.canv.drawPathMarkers(this.selected.position, path);
+        }
         // this.canv.getMousePosAndDrawCursor(ev);
-        },
+      },
       mapclick: (ev?) => {
         console.log('selected: mapclick');
         const path = this.canv.drawPath(this.selected, this.canv.getMousePos(ev));
@@ -156,6 +169,7 @@ export class Machine {
         this.transition(this.states.free);
        },
       leave: (ev?) => {
+        this.canv.clearPathMarkers();
         console.log('leaving selected state');
         this.selected = {};
       }
@@ -183,6 +197,12 @@ export class Machine {
     }
 
   };
+
+  updateRealizedPosition(name) {
+    const unit = this.game.state.player.units[name];
+    const pos = unit.position;
+    unit.realPos = {x: pos.x * this.tileSize, y: pos.y * this.tileSize};
+  }
 
   private allUnitsAsleep() {
     for(let name of this.game.state.player.units.names) {
@@ -257,17 +277,23 @@ export class Machine {
           // console.log(direction);
           this.moveTile(unit, direction, pixelsLeft-2)
             .then(resolve);
-        }, 5);
+        }, 7);
       }
     });
   }
 
   private checkForPlayerTurn(){
+    this.waiting = true;
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve();
-      }, 2000)
-    })
+        if (!this.enemyTurn) {
+          resolve();
+        } else {
+          this.checkForPlayerTurn()
+            .then(resolve);
+        }
+      }, 500);
+    });
   }
 
   private shiftRealPos(unit, direction, amount) {

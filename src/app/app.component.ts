@@ -13,6 +13,7 @@ export class AppComponent {
   @ViewChild('cursor') cursor: ElementRef;
   @ViewChild('indic') indicators: ElementRef;
   @ViewChild('map') background: ElementRef;
+  @ViewChild('paths') paths: ElementRef;
   @Output() canvasControl: EventEmitter<any> = new EventEmitter();
   @Output() onAnimateSprite: EventEmitter<any> = new EventEmitter<any>();
 
@@ -20,26 +21,31 @@ export class AppComponent {
   machine: Machine;
   game: GameState;
   good = false;
+  height: number;
+  width: number;
 
-  height = 250;
-  width = 500;
 
   ngAfterContentInit(): void{
     this.canv = new MultiCanvas(this.mouse.nativeElement,
                                 this.cursor.nativeElement,
                                 this.indicators.nativeElement,
-                                this.background.nativeElement);
+                                this.background.nativeElement,
+                                this.paths.nativeElement);
     this.game = new GameState();
     console.log(this.game.state);
     // console.log(this.game.state);
     this.machine = new Machine(this.canv, this.game);
     this.good=true;
+
+    this.height = this.machine.tileSize * this.canv.map.height;
+    this.width = this.machine.tileSize * this.canv.map.width;
   }
 
   @HostListener('document:keydown.esc')
   onEsc() { this.machine.state.esc(); }
   onMouseMove(ev) { this.machine.state.mousemove(ev); }
   onMapClick(ev) { this.machine.state.mapclick(ev); }
+  setPlayerTurn() {this.machine.enemyTurn = false;}
 
 
 }

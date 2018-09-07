@@ -2,12 +2,12 @@
   <div *ngFor="let name of units.names">
 
     <img [src]="dex[units[name].class][units[name].status]"
-         [style.width]="'50px'"
-         [style.height]="'50px'"
+         [style.width]="size*dex[units[name].class].width+'px'"
+         [style.height]="size*dex[units[name].class].height+'px'"
          [style.z-index]="4"
          [style.position]="'absolute'"
-         [style.top]="(units[name].realPos.y)+'px'"
-         [style.left]="(units[name].realPos.x)+'px'"
+         [style.top]="(units[name].realPos.y - size*(dex[units[name].class].height - 1))+'px'"
+         [style.left]="(units[name].realPos.x - size*(dex[units[name].class].width - 1)/2)+'px'"
     />
   </div>
 </div>
@@ -15,3 +15,8 @@
 <div    #enemies  style="width:0px; height:0px">
 
 </div>
+
+<!--[style.top]="(units[name].realPos.y - (size*dex[units[name].class].height - 1)/2)+'px'"-->
+<!--[style.left]="(units[name].realPos.x - (size*dex[units[name].class].width - 1)/2)+'px'"-->
+<!--[style.top]="units[name].realPos.y+'px'"-->
+<!--[style.left]="units[name].realPos.x+'px'"-->

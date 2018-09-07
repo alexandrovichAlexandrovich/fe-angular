@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { AssetDex } from "../../dex/asset-dex";
+import { AssetDex } from '../../dex/asset-dex';
 
 @Component({
   selector: 'app-unit-sprites',
@@ -10,6 +10,7 @@ export class UnitSpritesComponent implements OnInit {
 
   @Input() units: any;
   @Input() enemies: any;
+  @Input() size: number;
 
   dex = AssetDex;
 

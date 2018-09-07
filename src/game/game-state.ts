@@ -10,8 +10,8 @@ export class GameState {
           sleep: false,
           mvt: 5,
           position: {
-            x: 2,
-            y: 0
+            x: 7,
+            y: 10
           },
           inventory: [
             {
@@ -34,12 +34,12 @@ export class GameState {
         },
         Ross: {
           name: 'Ross',
-          class: 'brigandm',
+          class: 'pirate',
           sleep: true,
           mvt: 7,
           position: {
-            x: 1,
-            y: 0
+            x: 6,
+            y: 7
           },
           inventory: [
             {
