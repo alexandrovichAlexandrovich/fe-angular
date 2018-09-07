@@ -2,6 +2,9 @@ import {Component, ElementRef, EventEmitter, HostListener, Output, ViewChild} fr
 import { Machine } from '../game/game-interface'
 import { GameState } from '../game/game-state'
 import { MultiCanvas } from '../game/canvas'
+import {GameLoopService} from "./gameloop.service";
+import {CanvasService} from "./canvas.service";
+import {SpritesService} from "./sprites.service";
 
 @Component({
   selector: 'app-root',
@@ -25,15 +28,23 @@ export class AppComponent {
   width: number;
 
 
+  constructor(public gameloop: GameLoopService,
+              public canvas: CanvasService,
+              public sprites: SpritesService){}
+
   ngAfterContentInit(): void{
     this.canv = new MultiCanvas(this.mouse.nativeElement,
                                 this.cursor.nativeElement,
                                 this.indicators.nativeElement,
                                 this.background.nativeElement,
                                 this.paths.nativeElement);
+    this.canvas.setHtmlElements(this.mouse.nativeElement,
+                            this.cursor.nativeElement,
+                            this.indicators.nativeElement,
+                            this.background.nativeElement,
+                            this.paths.nativeElement);
     this.game = new GameState();
     console.log(this.game.state);
-    // console.log(this.game.state);
     this.machine = new Machine(this.canv, this.game);
     this.good=true;
 
@@ -46,6 +57,8 @@ export class AppComponent {
   onMouseMove(ev) { this.machine.state.mousemove(ev); }
   onMapClick(ev) { this.machine.state.mapclick(ev); }
   setPlayerTurn() {this.machine.enemyTurn = false;}
+
+  getSelected() {return this.gameloop;}
 
 
 }

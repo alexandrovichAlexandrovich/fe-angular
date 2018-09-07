@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import { UnitSpritesComponent } from './unit-sprites/unit-sprites.component';
 import { InfoDialogComponent } from './info-dialog/info-dialog.component';
+import {GameLoopService} from "./gameloop.service";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,7 @@ import { InfoDialogComponent } from './info-dialog/info-dialog.component';
     BrowserModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [GameLoopService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
