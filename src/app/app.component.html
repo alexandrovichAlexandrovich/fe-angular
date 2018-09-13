@@ -1,33 +1,58 @@
+<!--<div [style.height.px]="height" [style.width.px]="width" style="position: relative; display: inline-block; vertical-align: top">-->
+  <!--<canvas #map    width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:1'></canvas>-->
+  <!--<img [src]="'../assets/'+this.gameloop.map.file" width="{{width}}" height="{{height}}"  style='position:absolute; z-index:1'/>-->
+  <!--<canvas #indic  width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:2'></canvas>-->
+  <!--<canvas #cursor width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:3'></canvas>-->
+  <!--<canvas #paths width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:4'></canvas>-->
+
+  <!--<app-unit-sprites style="position: absolute; z-index: 5"></app-unit-sprites>-->
+
+  <!--<img src="../assets/cursor.gif" style="position: absolute; z-index:6" width="{{this.gameloop.size + 13}}" height="{{this.gameloop.size + 13}}"-->
+       <!--[style.top]="(this.machine.mouse.y * this.machine.tileSize - 6) +'px'"-->
+       <!--[style.left]="(this.machine.mouse.x * this.machine.tileSize - 6) +'px'"-->
+       <!--*ngIf="this.sprites.cursor">-->
+
+  <!--<canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:100; cursor: url("../assets/mousedot.png"), auto'-->
+          <!--(mousemove)="onMouseMove($event)"-->
+          <!--(mousedown)="onMapClick($event)">-->
+  <!--</canvas>-->
+
+  <!--<div *ngIf="this.gameloop.waiting" [style.width.px]="width" [style.height.px]="height" top="0" left="0" class="waitingScreen">-->
+    <!--<p class="overlayText"></p>-->
+  <!--</div>-->
+<!--</div>-->
+
+
 <div [style.height.px]="height" [style.width.px]="width" style="position: relative; display: inline-block; vertical-align: top">
   <canvas #map    width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:1'></canvas>
-  <img [src]="'../assets/'+this.canv.map.file" width="{{width}}" height="{{height}}"  style='position:absolute; z-index:1'/>
+  <img [src]="'../assets/'+this.gameloop.map.file" width="{{width}}" height="{{height}}"  style='position:absolute; z-index:1'/>
   <canvas #indic  width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:2'></canvas>
   <canvas #cursor width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:3'></canvas>
   <canvas #paths width="{{width}}" height="{{height}}" top="0" left="0" style='position:absolute; z-index:4'></canvas>
 
-  <app-unit-sprites [units]="this.game.state.player.units"
-                    [size]="this.machine.tileSize"
-                    style="position: absolute; z-index: 5">
-  </app-unit-sprites>
+  <app-unit-sprites style="position: absolute; z-index: 5"></app-unit-sprites>
 
-  <img src="../assets/cursor.gif" style="position: absolute; z-index:6" width="{{this.machine.tileSize + 13}}" height="{{this.machine.tileSize + 13}}"
-       [style.top]="(this.machine.mouse.y * this.machine.tileSize - 6) +'px'"
-       [style.left]="(this.machine.mouse.x * this.machine.tileSize - 6) +'px'"
-       *ngIf="this.machine.showcursor">
+  <img src="../assets/cursor.gif"
+       style="position: absolute; z-index:6"
+       width="{{this.gameloop.size + 13}}"
+       height="{{this.gameloop.size + 13}}"
+       [style.left]="(this.canvas.mousePosition.x - 6)+'px'"
+       [style.top]="(this.canvas.mousePosition.y - 6) + 'px'"
+       *ngIf="this.sprites.cursor">
 
   <canvas #mouse  width="{{width}}" height="{{height}}" style='position:absolute; z-index:100; cursor: url("../assets/mousedot.png"), auto'
           (mousemove)="onMouseMove($event)"
           (mousedown)="onMapClick($event)">
   </canvas>
 
-  <div *ngIf="this.machine.waiting" [style.width.px]="width" [style.height.px]="height" top="0" left="0" class="waitingScreen">
+  <div *ngIf="this.gameloop.waiting" [style.width.px]="width" [style.height.px]="height" top="0" left="0" class="waitingScreen">
     <p class="overlayText"></p>
   </div>
 </div>
 
 
 <div [style.height.px]="height" [style.width.px]="width/3" style="position: relative; display: inline-block; vertical-align: top">
-  <button (click)="setPlayerTurn()" *ngIf="machine.enemyTurn">End Opponent Turn</button>
+  <button (click)="setPlayerTurn()" *ngIf="gameloop.enemyTurn">End Opponent Turn</button>
   <app-info-dialog [machine]="this.machine">
 
   </app-info-dialog>

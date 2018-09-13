@@ -1,13 +1,13 @@
 <div    #un  style="width:0px; height:0px">
-  <div *ngFor="let name of units.names">
+  <div *ngFor="let name of this.sprites.units.names">
 
-    <img [src]="dex[units[name].class][units[name].status]"
-         [style.width]="size*dex[units[name].class].width+'px'"
-         [style.height]="size*dex[units[name].class].height+'px'"
+    <img [src]="dex[this.sprites.units[name].class][this.sprites.units[name].status]"
+         [style.width]="size*dex[this.sprites.units[name].class].width+'px'"
+         [style.height]="size*dex[this.sprites.units[name].class].height+'px'"
          [style.z-index]="4"
          [style.position]="'absolute'"
-         [style.top]="(units[name].realPos.y - size*(dex[units[name].class].height - 1))+'px'"
-         [style.left]="(units[name].realPos.x - size*(dex[units[name].class].width - 1)/2)+'px'"
+         [style.top]="(this.sprites.realPos[name].y - size*(dex[this.sprites.units[name].class].height - 1))+'px'"
+         [style.left]="(this.sprites.realPos[name].x - size*(dex[this.sprites.units[name].class].width - 1)/2)+'px'"
     />
   </div>
 </div>

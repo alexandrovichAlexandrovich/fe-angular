@@ -46,7 +46,15 @@ export class Map {
       [1,_,_,_,_,_,_,_,_,_,1,1,1,1,1,1],
       [1,_,_,_,_,_,2,_,_,_,_,_,_,_,_,_],
 
-    ];
+    ]
+
+  validCoords = (x, y) => {
+    return x >= 0 && y >= 0 && x < this.width  && y < this.height;
+  }
+
+  getPenalty = (unit, x, y) => {
+    return this.tiles[x][y] === 1 ? 99 : this.tiles[x][y] === 0 ? 1 : 2;
+  }
 }
 
 

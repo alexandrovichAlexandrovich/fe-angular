@@ -46,7 +46,7 @@ export class Machine {
 
     blocked: {
       enter: (ev?) => {
-        console.log("Entering blocked state");
+        console.log('Entering blocked state');
         this.canv.eraseIndicators();
         this.showcursor = false;
         this.checkForPlayerTurn()

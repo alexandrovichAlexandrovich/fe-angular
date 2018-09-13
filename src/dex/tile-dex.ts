@@ -9,7 +9,7 @@ export const TileDex = {
     name: 'Wall',
     avo: 0,
     def: 0,
-    penalty: 64
+    penalty: 63
   },
   2: {
     name: 'Forest',
@@ -17,4 +17,4 @@ export const TileDex = {
     def: 5,
     penalty: 2
   }
-}
+};
