@@ -20,7 +20,7 @@ export class SpritesService {
 
   public setSize(size) {
     this.size = size;
-    console.log('setting size. this object:');
+    // console.log('setting size. this object:');
     console.log(this.size);
   }
 
@@ -34,10 +34,10 @@ export class SpritesService {
 
   private resetRealizedPositions() {
     for (const name of this.units.names) {
-      console.log(name);
-      console.log(this.units[name]);
-      console.log(this.units[name].position);
-      console.log(this.size);
+      // console.log(name);
+      // console.log(this.units[name]);
+      // console.log(this.units[name].position);
+      // console.log(this.size);
       this.realPos[name] = {
         x: this.units[name].position.x * this.size,
         y: this.units[name].position.y * this.size
@@ -49,7 +49,6 @@ export class SpritesService {
   showCursor() { this.cursor = true; }
 
   animateMovement(ev: {unit, path, target}) {
-    // TODO
     return new Promise((resolve) => {
       this.animatePath(ev.unit, ev.path)
         .then(resolve);
@@ -73,6 +72,7 @@ export class SpritesService {
   }
 
   private moveUnitOneTile(unit, direction, pixelsLeft, moveAmount){
+    // console.log('shifting');
     return new Promise((resolve) => {
       if (pixelsLeft <= 0) {
         this.shiftRealPos(unit, direction, pixelsLeft);
@@ -91,16 +91,16 @@ export class SpritesService {
   private shiftRealPos(unit, direction, amount) {
     switch(direction) {
       case 'l':
-        this.realPos[unit].x -= amount;
+        this.realPos[unit.name].x -= amount;
         break;
       case 'r':
-        this.realPos[unit].x += amount;
+        this.realPos[unit.name].x += amount;
         break;
       case 'u':
-        this.realPos[unit].y -= amount;
+        this.realPos[unit.name].y -= amount;
         break;
       case 'd':
-        this.realPos[unit].y += amount;
+        this.realPos[unit.name].y += amount;
         break;
     }
   }

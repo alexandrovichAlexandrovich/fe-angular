@@ -5,7 +5,6 @@ import { MultiCanvas } from '../game/canvas';
 import {GameLoopService} from './gameloop.service';
 import {CanvasService} from './canvas.service';
 import {SpritesService} from './sprites.service';
-import {MouseService} from './mouse.service';
 import {MapService} from './map.service';
 
 @Component({
@@ -64,7 +63,7 @@ export class AppComponent {
   onEsc() { this.gameloop.state.esc(); }
   onMouseMove(ev) { this.gameloop.state.mousemove(ev); }
   onMapClick(ev) { this.gameloop.state.mapclick(ev); }
-  setPlayerTurn() { console.log('set player turn'); }
+  setPlayerTurn() { this.gameloop.playerTurn = true; }
   getSelected() { return this.gameloop.selected; }
 
 

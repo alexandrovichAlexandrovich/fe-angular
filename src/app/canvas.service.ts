@@ -49,8 +49,8 @@ export class CanvasService {
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
     this.mousePosition = {
-      x: (x - x % this.size) /* / this.size */,
-      y: (y - y % this.size) /* / this.size */
+      x: x /*- x % this.size) *//* / this.size */,
+      y: y /* - y % this.size) *//* / this.size */
     };
 
     this.mouseTile = {
@@ -109,6 +109,14 @@ export class CanvasService {
   getMovementChart(unit) {
     const chart = [];
     const pos = unit.position;
+    const range = [10, 0];
+    for (const item of unit.inventory) {
+      if (item.target = 'enemy') {
+        range[0] = Math.min(range[0], item.range[0]);
+        range[1] = Math.max(range[1], item.range[1]);
+      }
+    }
+    console.log(range);
     for (let x = 0; x < this.map.width; x++) {
       chart.push([]);
       for (let y = 0; y < this.map.width; y++) {
@@ -124,6 +132,15 @@ export class CanvasService {
 
       let penalty, path, remaining;
 
+      for (let i = range[0]; i <= range[1]; i++) {
+        for (let attack of this.getAttacksInRange(curr.x, curr.y, range)) {
+          // console.log('atk'+JSON.stringify(attack));
+          if(this.map.validCoords(attack.x, attack.y) && !chart[attack.x][attack.y]) {
+            chart[attack.x][attack.y] = 'x';
+          }
+        }
+      }
+
       const neighbors = [
         {x: curr.x-1, y: curr.y, code: 'l'},
         {x: curr.x+1, y: curr.y, code: 'r'},
@@ -135,7 +152,7 @@ export class CanvasService {
         if (this.map.validCoords(n.x, n.y)) {
           penalty = this.map.getPenalty(unit, n.x, n.y);
           remaining = chart[curr.x][curr.y].mvt - penalty;
-          const overwritePath = !chart[n.x][n.y] || chart[n.x][n.y].mvt < remaining;
+          const overwritePath = !chart[n.x][n.y] || chart[n.x][n.y] === 'x' || chart[n.x][n.y].mvt < remaining;
           if(remaining >= 0 && overwritePath) {
             path = chart[curr.x][curr.y].path + n.code;
             chart[n.x][n.y] = {path: path, mvt: remaining};
@@ -187,5 +204,23 @@ export class CanvasService {
   private clearPathMarkers(){
     const ctx = this.paths.getContext('2d');
     ctx.clearRect(0,0, this.map.width * this.size, this.map.height * this.size);
+  }
+
+  private getAttacksInRange(x: any, y: any, range: number[]) {
+    const attacks = [];
+    for (let i = range[0]; i <= range[1]; i++) {
+      for (let k = 0; k < i; k++) {
+        attacks.push({x: x+k, y: y+i-k});
+        attacks.push({x: x+i-k, y: y-k});
+        attacks.push({x: x-k, y: y-i+k});
+        attacks.push({x: x-i+k, y: y+k})
+      }
+        // attacks.push({x: x+i, y: y+i});
+        // attacks.push({x: x-i, y: y+i});
+        // attacks.push({x: x+i, y: y-i});
+        // attacks.push({x: x-i, y: y-i});
+    }
+    // console.log(attacks);
+    return attacks;
   }
 }

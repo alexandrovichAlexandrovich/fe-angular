@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {CanvasService} from './canvas.service';
 import {GameState} from '../game/game-state';
 import {SpritesService} from './sprites.service';
-import {MouseService} from './mouse.service';
+// import {MouseService} from './mouse.service';
 import {Map} from '../game/map';
 import {MapService} from './map.service';
 
@@ -19,7 +19,7 @@ export class GameLoopService {
   size = 30;
 
   waiting = false;
-  enemyTurn = false;
+  playerTurn = true;
 
   constructor(public canvas: CanvasService,
               public sprites: SpritesService,
@@ -43,18 +43,15 @@ export class GameLoopService {
         console.log('Entering blocked state');
         this.canvas.eraseIndicators();
         this.sprites.hideCursor();
-        setTimeout(() => {
-          this.sprites.showCursor();
-          console.log('showed cursor');
-        }, 1000);
-        // this.checkForPlayerTurn()
-        //   .then(() => {
-        //     if(this.allUnitsAsleep()) {
-        //       this.freeAllUnits();
-        //     }
-        //     this.show('Player phase');
-        //     this.transition(this.states.free);
-        //   });
+        this.checkForPlayerTurn()
+          .then(() => {
+            console.log('checked for player turn.');
+            if(this.allUnitsAsleep()) {
+              this.freeAllUnits();
+            }
+            console.log('Player phase');
+            this.transition(this.states.free);
+          });
       },
       mousemove: (ev?) => {},
       mapclick: (ev?) => {},
@@ -73,7 +70,7 @@ export class GameLoopService {
         this.canvas.eraseIndicators();
         console.log('entering free state');
         if (this.allUnitsAsleep()) {
-          this.enemyTurn = true;
+          this.playerTurn = false;
           this.transition(this.states.blocked);
         }
       },
@@ -87,7 +84,7 @@ export class GameLoopService {
             this.canvas.drawMovementRange(unit);
           }
         } else {
-          this.selected = {};
+          this.selected = null;
         }
       },
       mapclick: (ev?) => {
@@ -144,7 +141,7 @@ export class GameLoopService {
       },
       leave: (ev?) => {
         this.canvas.eraseIndicators();
-        this.selected = {};
+        // this.selected = null;
       }
     },
 
@@ -156,9 +153,10 @@ export class GameLoopService {
             ev.unit.position=ev.target;
             ev.unit.status='sleep';
             ev.unit.sleep = true;
+            this.sprites.setUnits(this.units);
+            this.selected = null;
             this.transition(this.states.free);
           });
-        ev.unit.sleep = true;
       },
       mousemove: (ev?) => {},
       mapclick: (ev?) => {},
@@ -194,7 +192,7 @@ export class GameLoopService {
     console.log(this.map);
     this.units = this.game.state.player.units;
     this.state = this.states.init;
-    this.selected = {};
+    this.selected = null;
 
     this.sprites.setSize(this.size);
     this.sprites.setUnits(this.units);
@@ -218,10 +216,10 @@ export class GameLoopService {
   }
 
   private mouseOverUnit(ev: any) {
-    const mouse = this.canvas.mousePosition;
+    const mouse = this.canvas.mouseTile;
     for (const name of this.units.names) {
       const unit = this.units[name].position;
-      if (unit.x === mouse.x / this.size && unit.y === mouse.y / this.size) {
+      if (unit.x === mouse.x && unit.y === mouse.y ) {
         return this.units[name];
       }
     }
@@ -236,5 +234,24 @@ export class GameLoopService {
       }
     }
     return false;
+  }
+
+  private checkForPlayerTurn() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          if (this.playerTurn) {
+            resolve();
+          } else {
+            this.checkForPlayerTurn()
+              .then(resolve);
+          }
+        }, 500);
+      });
+  }
+
+  private freeAllUnits() {
+    for(const name of this.units.names) {
+      this.units[name].sleep = false;
+    }
   }
 }

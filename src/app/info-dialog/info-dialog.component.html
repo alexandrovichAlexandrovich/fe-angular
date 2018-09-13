@@ -1,4 +1,4 @@
-<div style="padding-left: 20px" *ngIf="stringify(game.selected) !== '{}'">
+<div style="padding-left: 20px" *ngIf="game.selected">
   <p> {{ game.selected.name }} </p>
   <p> {{ assets[game.selected.class].title }} </p>
 

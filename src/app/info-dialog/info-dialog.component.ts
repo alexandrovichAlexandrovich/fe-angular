@@ -12,7 +12,7 @@ import {CanvasService} from '../canvas.service';
 })
 export class InfoDialogComponent implements OnInit {
 
-  @Input() machine: Machine;
+  // @Input() machine: Machine;
 
   assets = AssetDex;
   items = ItemDex;
