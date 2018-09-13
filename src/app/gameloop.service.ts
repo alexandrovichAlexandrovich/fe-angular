@@ -203,9 +203,9 @@ export class GameLoopService {
 
     this.canvas.setSize(this.size);
 
-    // this.transition(this.states.blocked);
+    this.transition(this.states.blocked);
     // Temporary for testing
-    this.transition(this.states.free);
+    // this.transition(this.states.free);
   }
 
   private allUnitsAsleep() {
